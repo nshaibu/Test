@@ -7,6 +7,7 @@ services:
     volumes:
       - .:/app
       - media:/media
+      - sent_emails:/sent_emails
     command: /run_app.sh
     environment:
       - DB_ENGINE=django.db.backends.postgresql
@@ -33,6 +34,7 @@ services:
     user: $USER_ID:$GID
     volumes:
       - media:/media
+      - sent_emails:/sent_emails
     environment:
       - DB_ENGINE=django.db.backends.postgresql
       - DB_DATABASE=dj_dev
@@ -49,3 +51,4 @@ services:
 volumes:
   postgres_data:
   media:
+  sent_emails:
