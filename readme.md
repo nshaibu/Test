@@ -9,6 +9,10 @@ It expose endpoints for :
 - Uploading ICD CSV files (with ~10,000 records) containing
 diagnosis code records.
 
+## Architecture
+![architecture](docs/arch.png)
+- The email service use dummy backend so the notification is write to a local folder name 'sent_emails'.
+
 ## Technologies/Programming Languages Used
 - Python.
 - Django.

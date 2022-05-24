@@ -8,4 +8,3 @@ COPY . .
 RUN chmod +x entrypoint.sh
 RUN chmod +x run_app.sh
 RUN chmod +x run_celery.sh
-#ENTRYPOINT ['entrypoint.sh']

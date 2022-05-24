@@ -1,4 +1,5 @@
 from django.urls import reverse
+from django.core.files.uploadedfile import SimpleUploadedFile
 from rest_framework.test import APITestCase, APIClient
 from rest_framework import status
 from model_mommy import mommy
@@ -72,4 +73,26 @@ class DiagnosisCodeAPITest(APITestCase):
         self.assertEqual(data['count'], 40)
         self.assertEqual(len(data['results']), 20)
 
+    def test_api_is_able_to_upload_csv_file(self):
+        url = reverse('api:file_upload')
+        content = b"""
+        A00,0,A000,"Cholera due to Vibrio cholerae 01, biovar cholerae","Cholera due to Vibrio cholerae 01, biovar cholerae","Cholera"\n
+        A00,1,A001,"Cholera due to Vibrio cholerae 01, biovar eltor","Cholera due to Vibrio cholerae 01, biovar eltor","Cholera"\n
+        A010,0,A0100,"Typhoid fever, unspecified","Typhoid fever, unspecified","Typhoid fever"\n
+        A010,1,A0101,"Typhoid meningitis","Typhoid meningitis","Typhoid fever"\n
+        A010,2,A0102,"Typhoid fever with heart involvement","Typhoid fever with heart involvement","Typhoid fever"\n
+        A010,3,A0103,"Typhoid pneumonia","Typhoid pneumonia","Typhoid fever"\n
+        A010,4,A0104,"Typhoid arthritis","Typhoid arthritis","Typhoid fever"\n
+        A010,5,A0105,"Typhoid osteomyelitis","Typhoid osteomyelitis","Typhoid fever"\n
+        A010,9,A0109,"Typhoid fever with other complications","Typhoid fever with other complications","Typhoid fever"
+        """
+        file = SimpleUploadedFile("file.csv", content, content_type="text/plain")
+        response = self.client.post(url, {"file": file, 'user_email': "som@example.com"}, format="multipart")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_api_for_file_upload_does_not_accept_non_csv_file(self):
+        url = reverse('api:file_upload')
+        file = SimpleUploadedFile("file.txt", b'sdas', content_type="text/plain")
+        response = self.client.post(url, {"file": file, 'user_email': "som@example.com"}, format="multipart")
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 

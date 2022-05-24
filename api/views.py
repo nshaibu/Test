@@ -1,4 +1,4 @@
-from rest_framework import generics, status
+from rest_framework import generics, status, serializers
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
 from .serializers import DiagnosisCodeSerializer, FileUploadSerializer
@@ -32,7 +32,12 @@ class CreateDiagnosisCodeByFileUploadView(generics.CreateAPIView):
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            try:
+                serializer.save()
+            except Exception as e:
+                return Response({
+                    "detail": e.get_full_details() if isinstance(e, serializers.ValidationError) else str(e)
+                }, status=status.HTTP_403_FORBIDDEN)
             return Response({"detail": "File successfully uploaded"}, status=status.HTTP_201_CREATED)
         return Response({"detail": "Uploading file failed", "errors": serializer.errors},
                         status=status.HTTP_403_FORBIDDEN)

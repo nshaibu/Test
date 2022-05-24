@@ -11,7 +11,7 @@ logger = get_task_logger(__name__)
 
 @app.task(name="send_notification_email")
 def send_notification_email(email: str, message: str):
-    msg = "Hello,\n"
+    msg = "Hello,\n\n"
     msg += message
     logger.info(message)
     try:
