@@ -1,0 +1,51 @@
+version: "3.9"
+services:
+  web_b:
+    build: .
+    ports:
+      - "8070:8070"
+    volumes:
+      - .:/app
+      - media:/media
+    command: /run_app.sh
+    environment:
+      - DB_ENGINE=django.db.backends.postgresql
+      - DB_DATABASE=dj_dev
+      - DB_USER=dj
+      - DB_PASSWORD=123456789
+      - DB_HOST=db
+      - DB_PORT=5432
+      - REDIS_HOST=redis
+    depends_on:
+      - redis
+      - db
+  db:
+    image: postgres:14-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=dj_dev
+      - POSTGRES_USER=dj
+      - POSTGRES_PASSWORD=123456789
+  celery_worker:
+    build: .
+    command: /run_celery.sh
+    user: $USER_ID:$GID
+    volumes:
+      - media:/media
+    environment:
+      - DB_ENGINE=django.db.backends.postgresql
+      - DB_DATABASE=dj_dev
+      - DB_USER=dj
+      - DB_PASSWORD=123456789
+      - DB_HOST=db
+      - DB_PORT=5432
+      - REDIS_HOST=redis
+    depends_on:
+      - redis
+      - db
+  redis:
+    image: "redis:alpine"
+volumes:
+  postgres_data:
+  media:
