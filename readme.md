@@ -11,7 +11,7 @@ diagnosis code records.
 
 ## Architecture
 ![architecture](docs/arch.png)
-- The email service use dummy backend so the notification is write to a local folder name 'sent_emails' and the terminal console of the service log.
+- The email service use dummy backend so the notification is written to a local folder named `sent_emails` and the terminal console of the service log.
 
 ## Technologies/Programming Languages Used
 - Python.
