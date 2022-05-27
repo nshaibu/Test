@@ -31,7 +31,7 @@ services:
   celery_worker:
     build: .
     command: /run_celery.sh
-    user: $USER_ID:$GID
+#    user: $USER_ID:$GID
     volumes:
       - media:/media
       - sent_emails:/sent_emails
